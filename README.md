@@ -170,7 +170,7 @@
 * request 에서 생성하는게 아닌 service layer 에서 생성하도록 일부 변화 [완료]
 * 너무 길게 이어지는 함수형 간소화 [MenuRequest] [완료]
 * dao 패키지명 repository 로 변경 [완료]
-* order와 Ordertable 패키지 분리
+* order와 Ordertable 패키지 분리 [완료]
 * Menugroup validator 로 위임
 * flyway 하나만 남겨놓고 제거 [완료]
 

@@ -1,10 +1,11 @@
-package kitchenpos.order.domain;
+package kitchenpos.ordertable.domain;
 
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import kitchenpos.order.domain.NumberOfGuest;
 
 @Entity
 public class OrderTable {

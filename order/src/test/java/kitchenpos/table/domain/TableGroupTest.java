@@ -6,7 +6,7 @@ import static kitchenpos.order.domain.OrderStatus.MEAL;
 
 import java.util.Collections;
 import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderTable;
+import kitchenpos.ordertable.domain.OrderTable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

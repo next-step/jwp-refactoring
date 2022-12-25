@@ -7,7 +7,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import java.util.Optional;
-import kitchenpos.order.domain.OrderTable;
+import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.table.application.TableGroupService;
 import kitchenpos.table.repository.TableGroupRepository;
 import kitchenpos.table.domain.TableGroup;

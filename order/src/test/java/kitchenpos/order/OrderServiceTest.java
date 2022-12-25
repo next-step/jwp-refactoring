@@ -17,7 +17,7 @@ import java.util.Optional;
 import kitchenpos.menu.repository.MenuRepository;
 import kitchenpos.order.application.OrderService;
 import kitchenpos.order.repository.OrderRepository;
-import kitchenpos.order.repository.OrderTableRepository;
+import kitchenpos.ordertable.repository.OrderTableRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderResponse;

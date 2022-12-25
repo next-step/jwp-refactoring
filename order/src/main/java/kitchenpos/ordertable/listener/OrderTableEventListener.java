@@ -1,8 +1,8 @@
-package kitchenpos.order.listener;
+package kitchenpos.ordertable.listener;
 
 import java.util.List;
-import kitchenpos.order.repository.OrderTableRepository;
-import kitchenpos.order.domain.OrderTable;
+import kitchenpos.ordertable.repository.OrderTableRepository;
+import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.table.event.TableGroupCreateEvent;
 import kitchenpos.table.event.TableUnGroupEvent;
 import org.springframework.context.event.EventListener;
