@@ -1,6 +1,6 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.exception.ErrorMessage;
+import kitchenpos.common.ErrorMessage;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;

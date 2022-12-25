@@ -1,6 +1,6 @@
 package kitchenpos.menu.application;
 
-import kitchenpos.exception.ErrorMessage;
+import kitchenpos.common.ErrorMessage;
 import kitchenpos.menu.domain.*;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
