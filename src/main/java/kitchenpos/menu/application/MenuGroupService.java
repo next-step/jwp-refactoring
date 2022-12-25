@@ -25,8 +25,4 @@ public class MenuGroupService {
     public List<MenuGroup> list() {
         return menuGroupRepository.findAll();
     }
-
-    public boolean existsById(Long menuGroupId) {
-        return menuGroupRepository.existsById(menuGroupId);
-    }
 }

@@ -1,5 +1,7 @@
 package kitchenpos.table.domain;
 
+import org.springframework.data.domain.AbstractAggregateRoot;
+
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -8,7 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
 @Entity
-public class OrderTable {
+public class OrderTable extends AbstractAggregateRoot<OrderTable> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -49,6 +51,7 @@ public class OrderTable {
             throw new IllegalStateException("주문 테이블의 상태를 변경할 수 없습니다.");
         }
         this.empty = Empty.from(empty);
+        registerEvent(new TableEmptyChangedEvent(id));
     }
 
     public void changeNumberOfGuests(int numberOfGuests) {

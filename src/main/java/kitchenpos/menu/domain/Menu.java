@@ -28,7 +28,7 @@ public class Menu {
 
     protected Menu() {
     }
-    
+
     public Menu(String name, BigDecimal price, Long menuGroupId) {
         validateName(name);
         validatePrice(price);
@@ -52,26 +52,12 @@ public class Menu {
 
     private void validateMenuGroupId(Long menuGroupId) {
         if (Objects.isNull(menuGroupId) || menuGroupId == 0) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("메뉴 그룹이 비어있습니다.");
         }
     }
 
     public void addMenuProduct(List<MenuProduct> menuProducts) {
-        validateSumOfPrice(menuProducts);
         this.menuProducts.addAll(this, menuProducts);
-    }
-
-    private void validateSumOfPrice(List<MenuProduct> menuProducts) {
-        BigDecimal amount = calculateAmount(menuProducts);
-        if (price.compareTo(amount) > 0) {
-            throw new IllegalArgumentException("상품들 금액의 합이 메뉴 가격보다 클 수 없습니다.");
-        }
-    }
-
-    private BigDecimal calculateAmount(List<MenuProduct> menuProducts) {
-        return menuProducts.stream()
-            .map(MenuProduct::calculateAmount)
-            .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
     public Long getId() {

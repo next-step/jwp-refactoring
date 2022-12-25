@@ -1,5 +1,6 @@
 package kitchenpos.table.domain;
 
+import org.springframework.data.domain.AbstractAggregateRoot;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.Column;
@@ -15,7 +16,7 @@ import java.util.List;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-public class TableGroup {
+public class TableGroup extends AbstractAggregateRoot<TableGroup> {
     private static final int MIN_SIZE = 2;
 
     @Id
@@ -50,7 +51,9 @@ public class TableGroup {
     }
 
     public void ungroup() {
+        List<Long> orderTableIds = orderTables.getIds();
         orderTables.clear();
+        registerEvent(new TableGroupUngroupedEvent(orderTableIds));
     }
 
     public Long getId() {

@@ -6,6 +6,7 @@ import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
 
@@ -39,5 +40,11 @@ public class OrderTables {
     public void clear() {
         orderTables.forEach(OrderTable::unbind);
         orderTables.clear();
+    }
+
+    public List<Long> getIds() {
+        return orderTables.stream()
+            .map(OrderTable::getId)
+            .collect(Collectors.toList());
     }
 }
