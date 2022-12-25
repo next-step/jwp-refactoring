@@ -8,7 +8,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.List;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.domain.MenuGroup;
+import kitchenpos.menu.dto.MenuGroupResponse;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
@@ -32,12 +32,13 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
         assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value());
 
         //when
-        List<MenuGroup> menuGroups = 메뉴_그룹_목록_조회().jsonPath().getList(".", MenuGroup.class);
+        List<MenuGroupResponse> menuGroups = 메뉴_그룹_목록_조회().jsonPath()
+            .getList(".", MenuGroupResponse.class);
 
         //then
         assertThat(menuGroups)
             .hasSize(1)
-            .extracting(MenuGroup::getName)
+            .extracting(MenuGroupResponse::getName)
             .containsExactly("추천 메뉴");
     }
 

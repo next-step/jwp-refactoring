@@ -3,21 +3,24 @@ package kitchenpos.table;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.domain.OrderTable;
+import java.util.Collections;
+import kitchenpos.order.domain.OrderTable;
+import kitchenpos.table.dto.OrderTableRequest;
 import org.springframework.http.MediaType;
 
 public class TableFixture {
 
+    public static final OrderTable 일번테이블 = new OrderTable(1L, 0, false, Collections.emptyList());
+    public static final OrderTable 빈테이블 = new OrderTable(2L, 0, true, Collections.emptyList());
+
     public static ExtractableResponse<Response> 주문_테이블_추가(Long tableGroupId, int numberOfGuest,
         boolean empty) {
-        OrderTable orderTable = new OrderTable();
-        orderTable.setTableGroupId(tableGroupId);
-        orderTable.setNumberOfGuests(numberOfGuest);
-        orderTable.setEmpty(empty);
+
+        OrderTableRequest orderTable = new OrderTableRequest(tableGroupId, numberOfGuest, empty);
         return 주문_테이블_추가(orderTable);
     }
 
-    public static ExtractableResponse<Response> 주문_테이블_추가(OrderTable orderTable) {
+    public static ExtractableResponse<Response> 주문_테이블_추가(OrderTableRequest orderTable) {
         return RestAssured
             .given().log().all()
             .body(orderTable)
@@ -39,8 +42,7 @@ public class TableFixture {
 
     public static ExtractableResponse<Response> 주문_테이블_빈_테이블_상태_변경(Long orderTableId,
         boolean empty) {
-        OrderTable orderTable = new OrderTable();
-        orderTable.setEmpty(empty);
+        OrderTableRequest orderTable = new OrderTableRequest(null, null, 0, empty);
 
         return RestAssured
             .given().log().all()
@@ -53,8 +55,7 @@ public class TableFixture {
 
     public static ExtractableResponse<Response> 주문_테이블의_방문한_손님_수_변경(Long orderTableId,
         int numberOfGuest) {
-        OrderTable orderTable = new OrderTable();
-        orderTable.setNumberOfGuests(numberOfGuest);
+        OrderTableRequest orderTable = new OrderTableRequest(null, null, numberOfGuest, false);
 
         return RestAssured
             .given().log().all()
@@ -63,5 +64,10 @@ public class TableFixture {
             .when().put("/api/tables/" + orderTableId + "/number-of-guests")
             .then().log().all()
             .extract();
+    }
+
+    public static OrderTableRequest createOrderTableRequest(OrderTable orderTable) {
+        return new OrderTableRequest(orderTable.getId(), orderTable.getNumberOfGuests(),
+            orderTable.isEmpty());
     }
 }
