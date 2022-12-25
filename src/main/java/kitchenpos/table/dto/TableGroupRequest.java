@@ -29,10 +29,9 @@ public class TableGroupRequest {
             .collect(Collectors.toList());
     }
 
-    public TableGroup toTableGroup(List<OrderTable> orderTables) {
+    public TableGroup toTableGroup() {
         return new TableGroup(
-            id,
-            orderTables
+            id
         );
     }
 

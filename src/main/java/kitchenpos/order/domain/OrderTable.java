@@ -39,11 +39,6 @@ public class OrderTable {
     }
 
     public void ungroup() {
-/*
-        FIXME
-        if (onCookingOrMeal()) {
-            throw new IllegalArgumentException("조리중이거나 식사중에는 단체 지정해제할 수 없습니다.");
-        }*/
         this.tableGroupId = null;
     }
 

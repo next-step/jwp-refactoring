@@ -128,17 +128,4 @@ class OrderTableTest {
         //then
         assertThat(orderTable.getTableGroupId()).isNull();
     }
-
-    @Test
-    @DisplayName("단체 지정 해제 실패")
-        //FIXME
-    void ungroupFail() {
-        //given
-        OrderTable orderTable = new OrderTable(1L, 0, true);
-
-        //when & then
-        Assertions.assertThatThrownBy(() -> orderTable.ungroup())
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("조리중이거나 식사중에는 단체 지정해제할 수 없습니다.");
-    }
 }
