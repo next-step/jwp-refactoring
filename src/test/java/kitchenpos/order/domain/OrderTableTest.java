@@ -26,7 +26,7 @@ class OrderTableTest {
     @BeforeEach
     void setup() {
         Product 강정치킨 = new Product(1L, "강정치킨", new BigDecimal(17_000));
-        MenuProduct 더블강정치킨상품 = new MenuProduct(1L, null, 강정치킨, 2L);
+        MenuProduct 더블강정치킨상품 = new MenuProduct(1L, null, 강정치킨.getId(), 2L);
         MenuGroup 추천메뉴 = new MenuGroup(1L, "추천메뉴");
         Menu 더블강정치킨 = new Menu(1L, "더블강정치킨", new BigDecimal(19_000), 추천메뉴,
             Collections.singletonList(더블강정치킨상품));

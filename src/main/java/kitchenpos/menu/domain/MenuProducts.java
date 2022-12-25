@@ -1,12 +1,10 @@
 package kitchenpos.menu.domain;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
-import kitchenpos.common.Price;
 
 @Embeddable
 public class MenuProducts {
@@ -20,14 +18,6 @@ public class MenuProducts {
     public MenuProducts(Menu menu, List<MenuProduct> menuProducts) {
         this.menuProducts = menuProducts;
         menuProducts.forEach(menuProduct -> menuProduct.setMenu(menu));
-    }
-
-    public Price sumOfProductsPrice() {
-        Price sum = new Price(BigDecimal.ZERO);
-        for (final MenuProduct menuProduct : menuProducts) {
-            sum = sum.add(menuProduct.calculateTotalPrice());
-        }
-        return sum;
     }
 
     public List<MenuProduct> getMenuProducts() {

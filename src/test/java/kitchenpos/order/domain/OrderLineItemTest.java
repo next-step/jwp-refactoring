@@ -22,7 +22,7 @@ class OrderLineItemTest {
     @BeforeEach
     void setUp() {
         추천메뉴 = new MenuGroup(1L, "추천메뉴");
-        더블강정치킨상품 = new MenuProduct(1L, null, 강정치킨, 2L);
+        더블강정치킨상품 = new MenuProduct(1L, null, 강정치킨.getId(), 2L);
         더블강정치킨 = new Menu(1L, "더블강정치킨", new BigDecimal(19_000), 추천메뉴,
             Collections.singletonList(더블강정치킨상품));
     }

@@ -37,18 +37,10 @@ public class Menu {
         this.price = new Price(price);
         this.menuGroup = menuGroup;
         this.menuProducts = new MenuProducts(this, menuProducts);
-        validateMenu();
     }
 
     public OrderMenu convertToOrderMenu() {
         return new OrderMenu(this.id, this.getName(), this.price);
-    }
-
-    private void validateMenu() {
-        Price sumOfProductsPrice = menuProducts.sumOfProductsPrice();
-        if (price.isGreaterThan(sumOfProductsPrice)) {
-            throw new IllegalArgumentException("메뉴의 가격이 상품들의 가격 합보다 크면 안된다");
-        }
     }
 
     public Long getId() {
@@ -59,12 +51,20 @@ public class Menu {
         return name;
     }
 
+    public Price price() {
+        return price;
+    }
+
     public BigDecimal getPrice() {
         return price.price();
     }
 
     public Long menuGroupId() {
         return menuGroup.getId();
+    }
+
+    public MenuProducts getMenuProducts() {
+        return menuProducts;
     }
 
     public List<MenuProduct> menuProducts() {

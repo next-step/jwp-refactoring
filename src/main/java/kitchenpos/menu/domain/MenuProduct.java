@@ -7,9 +7,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import kitchenpos.common.Price;
-import kitchenpos.product.domain.Product;
 
 @Entity
 public class MenuProduct {
@@ -20,22 +18,20 @@ public class MenuProduct {
     @ManyToOne
     @JoinColumn(name = "menu_id")
     private Menu menu;
-    @OneToOne
-    @JoinColumn(name = "product_id")
-    private Product product;
+    private Long productId;
     private long quantity;
 
     protected MenuProduct() {
     }
 
-    public MenuProduct(Product product, long quantity) {
-        this(null, null, product, quantity);
+    public MenuProduct(Long productId, long quantity) {
+        this(null, null, productId, quantity);
     }
 
-    public MenuProduct(Long seq, Menu menu, Product product, long quantity) {
+    public MenuProduct(Long seq, Menu menu, Long productId, long quantity) {
         this.seq = seq;
         this.menu = menu;
-        this.product = product;
+        this.productId = productId;
         this.quantity = quantity;
     }
 
@@ -56,15 +52,11 @@ public class MenuProduct {
         this.menu = menu;
     }
 
-    public Product getProduct() {
-        return product;
-    }
-
     public Long productId() {
-        return product.getId();
+        return productId;
     }
 
-    public Price calculateTotalPrice() {
-        return product.getPrice().multiply(BigDecimal.valueOf(quantity));
+    public Price calculateTotalPrice(Price price) {
+        return price.multiply(BigDecimal.valueOf(quantity));
     }
 }

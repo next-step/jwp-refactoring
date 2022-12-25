@@ -11,6 +11,7 @@ import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.menu.validator.MenuValidator;
 import kitchenpos.product.dao.ProductRepository;
 import kitchenpos.product.domain.Product;
 import org.springframework.stereotype.Service;
@@ -21,26 +22,22 @@ public class MenuService {
 
     private final MenuRepository menuRepository;
     private final MenuGroupRepository menuGroupRepository;
-    private final MenuProductRepository menuProductRepository;
-    private final ProductRepository productRepository;
+    private final MenuValidator validator;
 
     public MenuService(
         final MenuRepository menuRepository,
         final MenuGroupRepository menuGroupRepository,
-        final MenuProductRepository menuProductRepository,
-        final ProductRepository productRepository
+        final MenuValidator menuValidator
     ) {
         this.menuRepository = menuRepository;
         this.menuGroupRepository = menuGroupRepository;
-        this.menuProductRepository = menuProductRepository;
-        this.productRepository = productRepository;
+        this.validator = menuValidator;
     }
 
     @Transactional
     public MenuResponse create(final MenuRequest request) {
-        List<MenuProductRequest> menuProducts = request.getMenuProducts();
-        Menu menu = request
-            .toMenu(getMenuProducts(menuProducts), getMenuGroup(request.getMenuGroupId()));
+        Menu menu = request.toMenu(getMenuGroup(request.getMenuGroupId()));
+        validator.validate(menu);
         final Menu savedMenu = menuRepository.save(menu);
         return MenuResponse.from(savedMenu);
     }
@@ -48,20 +45,6 @@ public class MenuService {
     private MenuGroup getMenuGroup(Long menuGroupId) {
         return menuGroupRepository.findById(menuGroupId)
             .orElseThrow(() -> new IllegalArgumentException("존재 하지 않는 메뉴 그룹 입니다."));
-    }
-
-    private List<MenuProduct> getMenuProducts(List<MenuProductRequest> requests) {
-        return requests.stream()
-            .map(menuProductRequest -> {
-                Product product = findProductById(menuProductRequest.getProductId());
-                return menuProductRequest.toMenuProduct(product);
-            })
-            .collect(Collectors.toList());
-    }
-
-    private Product findProductById(Long productId) {
-        return productRepository.findById(productId)
-            .orElseThrow(() -> new IllegalArgumentException("존재 하지 않는 상품 입니다."));
     }
 
     public List<MenuResponse> list() {

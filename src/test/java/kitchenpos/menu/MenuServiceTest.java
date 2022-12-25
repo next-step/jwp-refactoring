@@ -2,7 +2,6 @@ package kitchenpos.menu;
 
 import static kitchenpos.menu.MenuFixture.더블강정치킨;
 import static kitchenpos.menu.MenuGroupFixture.추천메뉴;
-import static kitchenpos.product.ProductFixture.강정치킨;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
@@ -12,10 +11,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import kitchenpos.menu.application.MenuService;
-import kitchenpos.menu.dao.MenuRepository;
 import kitchenpos.menu.dao.MenuGroupRepository;
-import kitchenpos.menu.dao.MenuProductRepository;
+import kitchenpos.menu.dao.MenuRepository;
 import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.menu.validator.MenuValidator;
 import kitchenpos.product.dao.ProductRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -32,7 +31,7 @@ class MenuServiceTest {
     @Mock
     private MenuGroupRepository menuGroupRepository;
     @Mock
-    private MenuProductRepository menuProductRepository;
+    private MenuValidator menuValidator;
     @Mock
     private ProductRepository productRepository;
     @InjectMocks
@@ -44,8 +43,6 @@ class MenuServiceTest {
         //given
         when(menuGroupRepository.findById(any()))
             .thenReturn(Optional.of(추천메뉴));
-        when(productRepository.findById(any()))
-            .thenReturn(Optional.of(강정치킨));
         when(menuRepository.save(any()))
             .thenReturn(더블강정치킨);
 
@@ -62,26 +59,11 @@ class MenuServiceTest {
         //given
         when(menuGroupRepository.findById(any()))
             .thenReturn(Optional.empty());
-        when(productRepository.findById(any()))
-            .thenReturn(Optional.of(강정치킨));
 
         //when & then
         assertThatThrownBy(() -> menuService.create(MenuFixture.createMenuRequest(더블강정치킨)))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("존재 하지 않는 메뉴 그룹 입니다.");
-    }
-
-    @Test
-    @DisplayName("존재 하지 않는 상품이면 에러 발생")
-    void noProductException() {
-        //given
-        when(productRepository.findById(any()))
-            .thenReturn(Optional.empty());
-
-        //when & then
-        assertThatThrownBy(() -> menuService.create(MenuFixture.createMenuRequest(더블강정치킨)))
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("존재 하지 않는 상품 입니다.");
     }
 
     @Test
