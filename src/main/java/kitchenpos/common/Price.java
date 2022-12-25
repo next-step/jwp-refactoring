@@ -1,11 +1,14 @@
 package kitchenpos.common;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Objects;
 import javax.persistence.Embeddable;
 
 @Embeddable
 public class Price {
+
+    public static Price ZERO = new Price(0);
 
     private BigDecimal price;
 
@@ -21,6 +24,11 @@ public class Price {
             throw new IllegalArgumentException("가격정보가 없거나 0원미만이면 안됩니다.");
         }
         this.price = price;
+    }
+
+    public static Price sum(List<Price> totalProductsPrice) {
+        return totalProductsPrice.stream()
+            .reduce(ZERO, Price::add);
     }
 
     public boolean isGreaterThan(Price otherPrice) {

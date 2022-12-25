@@ -19,8 +19,8 @@ import org.springframework.http.MediaType;
 
 public class MenuFixture {
 
-    public static final MenuProduct 더블강정치킨상품 = new MenuProduct(1L, null, 강정치킨, 2L);
-    public static final MenuProduct 더블개손해치킨상품 = new MenuProduct(1L, null, 개손해치킨, 2L);
+    public static final MenuProduct 더블강정치킨상품 = new MenuProduct(1L, null, 강정치킨.getId(), 2L);
+    public static final MenuProduct 더블개손해치킨상품 = new MenuProduct(1L, null, 개손해치킨.getId(), 2L);
     public static final Menu 더블강정치킨 = new Menu(1L, "더블강정치킨", new BigDecimal(19_000), 추천메뉴,
         Collections.singletonList(더블강정치킨상품));
 
@@ -55,7 +55,7 @@ public class MenuFixture {
     public static List<MenuProductRequest> createMenuProductReqeust(
         List<MenuProduct> menuProducts) {
         return menuProducts.stream()
-            .map(menuProduct -> new MenuProductRequest(menuProduct.getProduct().getId(),
+            .map(menuProduct -> new MenuProductRequest(menuProduct.productId(),
                 menuProduct.getQuantity()))
             .collect(Collectors.toList());
     }

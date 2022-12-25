@@ -1,13 +1,13 @@
-package kitchenpos.table;
+package kitchenpos.order;
 
 import static kitchenpos.menu.MenuFixture.메뉴_등록;
 import static kitchenpos.menu.MenuGroupFixture.메뉴_그룹_등록;
 import static kitchenpos.order.OrderFixture.주문;
 import static kitchenpos.product.ProductFixture.상품_등록;
-import static kitchenpos.table.TableFixture.주문_테이블_목록_조회;
-import static kitchenpos.table.TableFixture.주문_테이블_빈_테이블_상태_변경;
-import static kitchenpos.table.TableFixture.주문_테이블_추가;
-import static kitchenpos.table.TableFixture.주문_테이블의_방문한_손님_수_변경;
+import static kitchenpos.order.TableFixture.주문_테이블_목록_조회;
+import static kitchenpos.order.TableFixture.주문_테이블_빈_테이블_상태_변경;
+import static kitchenpos.order.TableFixture.주문_테이블_추가;
+import static kitchenpos.order.TableFixture.주문_테이블의_방문한_손님_수_변경;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 
@@ -22,8 +22,8 @@ import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.product.dto.ProductResponse;
-import kitchenpos.table.dto.OrderTableRequest;
-import kitchenpos.table.dto.OrderTableResponse;
+import kitchenpos.order.dto.OrderTableRequest;
+import kitchenpos.order.dto.OrderTableResponse;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 

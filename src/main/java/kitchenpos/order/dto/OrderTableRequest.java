@@ -1,6 +1,5 @@
-package kitchenpos.table.dto;
+package kitchenpos.order.dto;
 
-import java.util.Collections;
 import kitchenpos.order.domain.OrderTable;
 
 public class OrderTableRequest {
@@ -28,8 +27,7 @@ public class OrderTableRequest {
         return new OrderTable(
             id,
             numberOfGuests,
-            empty,
-            Collections.emptyList()
+            empty
         );
     }
 

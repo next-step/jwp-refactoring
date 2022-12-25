@@ -15,10 +15,10 @@ class MenuProductTest {
     void calculateTotalPrice() {
         //given
         Product 강정치킨 = new Product(1L, "강정치킨", new BigDecimal(17_000));
-        MenuProduct menuProduct = new MenuProduct(강정치킨, 5);
+        MenuProduct menuProduct = new MenuProduct(강정치킨.getId(), 5);
 
         //when
-        Price totalPrice = menuProduct.calculateTotalPrice();
+        Price totalPrice = menuProduct.calculateTotalPrice(강정치킨.getPrice());
 
         //then
         assertThat(totalPrice).isEqualTo(new Price(BigDecimal.valueOf(85_000)));

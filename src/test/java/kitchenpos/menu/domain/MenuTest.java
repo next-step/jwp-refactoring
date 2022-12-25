@@ -23,8 +23,8 @@ class MenuTest {
     void setup() {
         Product 개손해치킨 = new Product(2L, "개손해치킨", new BigDecimal(1));
         Product 강정치킨 = new Product(1L, "강정치킨", new BigDecimal(17_000));
-        더블강정치킨상품 = new MenuProduct(1L, null, 강정치킨, 2L);
-        더블개손해치킨상품 = new MenuProduct(1L, null, 개손해치킨, 2L);
+        더블강정치킨상품 = new MenuProduct(1L, null, 강정치킨.getId(), 2L);
+        더블개손해치킨상품 = new MenuProduct(1L, null, 개손해치킨.getId(), 2L);
         추천메뉴 = new MenuGroup(1L, "추천메뉴");
     }
 
@@ -57,18 +57,5 @@ class MenuTest {
                 Arrays.asList(더블강정치킨상품)))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("가격정보가 없거나 0원미만이면 안됩니다.");
-    }
-
-    @Test
-    @DisplayName("메뉴의 가격이 상품들의 가격 합보다 크면 안된다")
-    void validateSumOfMenuPrice() {
-        //when & then
-        Assertions
-            .assertThatThrownBy(() -> new Menu(1L, "더블강정치킨", new BigDecimal(199_000),
-                추천메뉴,
-                Arrays.asList(더블강정치킨상품, 더블개손해치킨상품)))
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("메뉴의 가격이 상품들의 가격 합보다 크면 안된다");
-
     }
 }

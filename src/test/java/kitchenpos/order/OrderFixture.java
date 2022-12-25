@@ -1,7 +1,8 @@
 package kitchenpos.order;
 
+import static kitchenpos.order.TableFixture.일번테이블;
 import static kitchenpos.order.domain.OrderStatus.COOKING;
-import static kitchenpos.table.TableFixture.일번테이블;
+import static kitchenpos.order.domain.OrderStatus.MEAL;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -20,11 +21,14 @@ import org.springframework.http.MediaType;
 
 public class OrderFixture {
 
-    public static final OrderLineItem 주문항목 = new OrderLineItem(1L, null, MenuFixture.더블강정치킨,
+    public static final OrderLineItem 주문항목 = new OrderLineItem(1L, null,
+        MenuFixture.더블강정치킨.convertToOrderMenu(),
         2L);
     public static final Order 주문 = new Order(1L, 일번테이블, null, null,
         Collections.singletonList(주문항목));
     public static final Order 조리중주문 = new Order(1L, 일번테이블, COOKING, null,
+        Collections.singletonList(주문항목));
+    public static final Order 식사중 = new Order(1L, 일번테이블, MEAL, null,
         Collections.singletonList(주문항목));
 
     public static ExtractableResponse<Response> 주문(Long orderTableId,

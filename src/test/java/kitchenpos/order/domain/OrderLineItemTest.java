@@ -22,7 +22,7 @@ class OrderLineItemTest {
     @BeforeEach
     void setUp() {
         추천메뉴 = new MenuGroup(1L, "추천메뉴");
-        더블강정치킨상품 = new MenuProduct(1L, null, 강정치킨, 2L);
+        더블강정치킨상품 = new MenuProduct(1L, null, 강정치킨.getId(), 2L);
         더블강정치킨 = new Menu(1L, "더블강정치킨", new BigDecimal(19_000), 추천메뉴,
             Collections.singletonList(더블강정치킨상품));
     }
@@ -31,7 +31,8 @@ class OrderLineItemTest {
     @DisplayName("주문 항목 생성")
     void createOrderLineItem() {
         //when
-        OrderLineItem orderLineItem = new OrderLineItem(null, null, 더블강정치킨, 3L);
+        OrderLineItem orderLineItem = new OrderLineItem(null, null, 더블강정치킨.convertToOrderMenu(),
+            3L);
 
         //then
         assertThat(orderLineItem.getQuantity()).isEqualTo(3L);

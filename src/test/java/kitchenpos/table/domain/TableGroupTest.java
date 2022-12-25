@@ -26,79 +26,33 @@ class TableGroupTest {
 
     @BeforeEach
     void setup() {
-        OrderTable 일번테이블 = new OrderTable(1L, 0, false, Collections.emptyList());
+        OrderTable 일번테이블 = new OrderTable(1L, 0, false);
         Order 조리중 = new Order(1L, 일번테이블, COOKING, null, Collections.singletonList(주문항목));
         Order 식사중 = new Order(1L, 일번테이블, MEAL, null, Collections.singletonList(주문항목));
-        일번조리중테이블 = new OrderTable(1L, 0, true, Collections.singletonList(조리중));
-        이번조리중테이블 = new OrderTable(2L, 0, true, Collections.singletonList(조리중));
-        일번식사중테이블 = new OrderTable(1L, 0, true, Collections.singletonList(식사중));
-        이번식사중테이블 = new OrderTable(2L, 0, true, Collections.singletonList(식사중));
-        일번빈테이블 = new OrderTable(1L, 0, true, Collections.emptyList());
-        이번빈테이블 = new OrderTable(2L, 0, true, Collections.emptyList());
-        주문테이블 = new OrderTable(1L, 0, false, Collections.emptyList());
+        일번조리중테이블 = new OrderTable(1L, 0, true);
+        이번조리중테이블 = new OrderTable(2L, 0, true);
+        일번식사중테이블 = new OrderTable(1L, 0, true);
+        이번식사중테이블 = new OrderTable(2L, 0, true);
+        일번빈테이블 = new OrderTable(1L, 0, true);
+        이번빈테이블 = new OrderTable(2L, 0, true);
+        주문테이블 = new OrderTable(1L, 0, false);
     }
 
     @Test
     @DisplayName("단체 지정 성공")
     void createTableGroup() {
         //when
-        TableGroup tableGroup = new TableGroup(1L, Arrays.asList(일번빈테이블, 이번빈테이블));
-
-        //then
-        assertThat(tableGroup.getOrderTables())
-            .hasSize(2)
-            .extracting(OrderTable::isEmpty)
-            .containsExactly(false, false);
+        TableGroup tableGroup = new TableGroup(1L);
     }
 
     @Test
     @DisplayName("단체 지정 해제")
     void ungroup() {
         //given
-        TableGroup tableGroup = new TableGroup(1L, Arrays.asList(일번빈테이블, 이번빈테이블));
+        TableGroup tableGroup = new TableGroup(1L);
 
         //when
         tableGroup.ungroup();
-
-        //then
-        assertThat(tableGroup.getOrderTables())
-            .hasSize(2)
-            .extracting(OrderTable::getTableGroupId)
-            .containsExactly(null, null);
-    }
-
-    @Test
-    @DisplayName("단체 지정 해제할 대상 테이블의 주문 상태가 조리중 이거나 식사중 이라면 해제 불가능")
-    void cannotUngroupWhenOrderOnMealOrCooking() {
-        //given
-        TableGroup 조리중테이블그룹 = new TableGroup(1L, Arrays.asList(일번조리중테이블, 이번조리중테이블));
-
-        //when & then
-        assertThatThrownBy(조리중테이블그룹::ungroup)
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("조리중이거나 식사중에는 단체 지정해제할 수 없습니다.");
-
-        //given
-        TableGroup 식사중테이블그룹 = new TableGroup(1L, Arrays.asList(일번식사중테이블, 이번식사중테이블));
-
-        //when & then
-        assertThatThrownBy(식사중테이블그룹::ungroup)
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("조리중이거나 식사중에는 단체 지정해제할 수 없습니다.");
-    }
-
-    @Test
-    @DisplayName("단체 지정할 테이블이 없거나 2 미만일 경우 단체 지정 실패")
-    void groupFailWhenTableEmptyOrLessThan2() {
-        //when & then
-        assertThatThrownBy(() -> new TableGroup(1L, Collections.emptyList()))
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("단체 지정할 테이블이 없거나 단체 지정 할 테이블 2개 미만 입니다.");
-
-        //when & then
-        assertThatThrownBy(() -> new TableGroup(1L, Collections.singletonList(일번빈테이블)))
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("단체 지정할 테이블이 없거나 단체 지정 할 테이블 2개 미만 입니다.");
     }
 
 }

@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.order.domain.OrderTable;
+import kitchenpos.order.dto.OrderTableRequest;
 import kitchenpos.table.domain.TableGroup;
 
 public class TableGroupRequest {
@@ -28,10 +29,9 @@ public class TableGroupRequest {
             .collect(Collectors.toList());
     }
 
-    public TableGroup toTableGroup(List<OrderTable> orderTables) {
+    public TableGroup toTableGroup() {
         return new TableGroup(
-            id,
-            orderTables
+            id
         );
     }
 

@@ -1,6 +1,7 @@
 package kitchenpos.order.domain;
 
 import java.util.Objects;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -8,7 +9,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import kitchenpos.menu.domain.Menu;
 
 @Entity
 public class OrderLineItem {
@@ -19,21 +19,20 @@ public class OrderLineItem {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id")
     private Order order;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "menu_id")
-    private Menu menu;
+    @Embedded
+    private OrderMenu orderMenu;
     private long quantity;
 
     protected OrderLineItem() {
     }
 
-    public OrderLineItem(Long seq, Order order, Menu menu, long quantity) {
-        if (Objects.isNull(menu)) {
+    public OrderLineItem(Long seq, Order order, OrderMenu orderMenu, long quantity) {
+        if (Objects.isNull(orderMenu)) {
             throw new IllegalArgumentException("주문 항목에 메뉴가 없습니다.");
         }
         this.seq = seq;
         this.order = order;
-        this.menu = menu;
+        this.orderMenu = orderMenu;
         this.quantity = quantity;
     }
 
@@ -53,10 +52,7 @@ public class OrderLineItem {
     }
 
     public Long menuId() {
-        if (Objects.isNull(menu)) {
-            return null;
-        }
-        return menu.getId();
+        return orderMenu.getMenuId();
     }
 
     public long getQuantity() {

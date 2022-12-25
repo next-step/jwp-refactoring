@@ -18,7 +18,7 @@ public class OrderLineItemRequest {
     }
 
     public OrderLineItem toOrderLineItem(Menu menu) {
-        return new OrderLineItem(seq, null, menu, quantity);
+        return new OrderLineItem(seq, null, menu.convertToOrderMenu(), quantity);
     }
 
     public Long getSeq() {

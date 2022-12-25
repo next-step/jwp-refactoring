@@ -1,6 +1,6 @@
 package kitchenpos.table;
 
-import static kitchenpos.table.TableFixture.주문_테이블_추가;
+import static kitchenpos.order.TableFixture.주문_테이블_추가;
 import static kitchenpos.table.TableGroupFixture.단체_지정;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -9,7 +9,7 @@ import io.restassured.response.Response;
 import java.sql.SQLException;
 import java.util.Arrays;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.table.dto.OrderTableResponse;
+import kitchenpos.order.dto.OrderTableResponse;
 import kitchenpos.table.dto.TableGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
