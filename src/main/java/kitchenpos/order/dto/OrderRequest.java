@@ -1,10 +1,8 @@
 package kitchenpos.order.dto;
 
-import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.domain.OrderTable;
 
 import java.util.List;
 
@@ -23,14 +21,20 @@ public class OrderRequest {
         this.orderLineItems = orderLineItems;
     }
 
-    public Order toOrder(OrderTable orderTable, OrderStatus orderStatus, List<Menu> menus) {
-        Order order = new Order(orderTable, orderStatus);
+    public Order toOrder(Long orderTableId, OrderStatus orderStatus) {
+        Order order = new Order(orderTableId, orderStatus);
         List<OrderLineItem> items = orderLineItems.stream()
-                .map(orderLineItem -> orderLineItem.toOrderLineItem(order, menus))
+                .map(orderLineItem -> orderLineItem.toOrderLineItem(order))
                 .collect(toList());
         order.order(items);
 
         return order;
+    }
+
+    public List<Long> toMenuIds() {
+        return orderLineItems.stream()
+                .map(OrderLineItemRequest::getMenuId)
+                .collect(toList());
     }
 
     public Long getOrderTableId() {
@@ -43,11 +47,5 @@ public class OrderRequest {
 
     public List<OrderLineItemRequest> getOrderLineItems() {
         return orderLineItems;
-    }
-
-    public List<Long> findAllMenuIds() {
-        return orderLineItems.stream()
-                .map(OrderLineItemRequest::getMenuId)
-                .collect(toList());
     }
 }

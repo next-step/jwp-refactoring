@@ -8,10 +8,10 @@ import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.table.domain.OrderTable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -59,18 +59,21 @@ public class OrderRestControllerTest extends ControllerTest {
         후라이드치킨_주문_테이블 = new OrderTable(4, false);
         양념치킨_주문_테이블 = new OrderTable(2, false);
 
-        후라이드치킨_주문 = new Order(후라이드치킨_주문_테이블, OrderStatus.COOKING);
-        양념치킨_주문 = new Order(양념치킨_주문_테이블, OrderStatus.COOKING);
-        콜라_주문 = new Order(후라이드치킨_주문_테이블, OrderStatus.COOKING);
-
-        후라이드치킨_주문_항목 = new OrderLineItem(후라이드치킨_주문, 후라이드치킨_메뉴, 1);
-        콜라_주문_항목 = new OrderLineItem(콜라_주문, 콜라_메뉴, 1);
-
         ReflectionTestUtils.setField(후라이드치킨_주문_테이블, "id", 1L);
         ReflectionTestUtils.setField(양념치킨_주문_테이블, "id", 2L);
+        ReflectionTestUtils.setField(후라이드치킨_메뉴, "id", 1L);
+        ReflectionTestUtils.setField(콜라_메뉴, "id", 2L);
+
+        후라이드치킨_주문 = new Order(후라이드치킨_주문_테이블.getId(), OrderStatus.COOKING);
+        양념치킨_주문 = new Order(양념치킨_주문_테이블.getId(), OrderStatus.COOKING);
+        콜라_주문 = new Order(후라이드치킨_주문_테이블.getId(), OrderStatus.COOKING);
+
+        후라이드치킨_주문_항목 = new OrderLineItem(후라이드치킨_주문, 후라이드치킨_메뉴.getId(), 1);
+        콜라_주문_항목 = new OrderLineItem(콜라_주문, 콜라_메뉴.getId(), 1);
 
         ReflectionTestUtils.setField(후라이드치킨_주문, "id", 1L);
         ReflectionTestUtils.setField(양념치킨_주문, "id", 2L);
+        ReflectionTestUtils.setField(콜라_주문, "id", 3L);
 
         주문_메뉴_목록 = Arrays.asList(후라이드치킨_주문_항목, 콜라_주문_항목);
         후라이드치킨_주문.order(주문_메뉴_목록);

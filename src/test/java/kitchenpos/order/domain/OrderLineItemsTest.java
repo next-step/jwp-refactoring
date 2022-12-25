@@ -4,9 +4,11 @@ import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.Product;
+import kitchenpos.table.domain.OrderTable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Arrays;
 
@@ -24,13 +26,22 @@ class OrderLineItemsTest {
 
     @BeforeEach
     void setUp() {
-        우아한_주문_테이블_1 = new OrderTable(1, false);
-        첫번째_주문 = new Order(우아한_주문_테이블_1, OrderStatus.COOKING);
-        짬뽕 = new Product("짬뽕", 8000);
-        탕수육 = new Product("탕수육", 18000);
         중식 = new MenuGroup("중식");
         중식_세트 = new Menu("중식 세트", 26000, 중식);
-        중식_세트_주문 = new OrderLineItem(첫번째_주문, 중식_세트, 1L);
+        짬뽕 = new Product("짬뽕", 8000);
+        탕수육 = new Product("탕수육", 18000);
+
+        우아한_주문_테이블_1 = new OrderTable(1, false);
+
+        ReflectionTestUtils.setField(중식, "id", 1L);
+        ReflectionTestUtils.setField(중식_세트, "id", 1L);
+        ReflectionTestUtils.setField(우아한_주문_테이블_1, "id", 1L);
+
+        첫번째_주문 = new Order(우아한_주문_테이블_1.getId(), OrderStatus.COOKING);
+
+        ReflectionTestUtils.setField(첫번째_주문, "id", 1L);
+
+        중식_세트_주문 = new OrderLineItem(첫번째_주문, 중식_세트.getId(), 1L);
         중식_세트.create(Arrays.asList(
                 new MenuProduct(중식_세트, 짬뽕, 1L),
                 new MenuProduct(중식_세트, 탕수육, 1L)));
