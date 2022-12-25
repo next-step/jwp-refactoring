@@ -1,7 +1,7 @@
 package kitchenpos.order;
 
 import static kitchenpos.order.domain.OrderStatus.COOKING;
-import static kitchenpos.table.TableFixture.일번테이블;
+import static kitchenpos.order.TableFixture.일번테이블;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;

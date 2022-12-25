@@ -3,6 +3,7 @@ package kitchenpos.table.dto;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
+import kitchenpos.order.dto.OrderTableResponse;
 import kitchenpos.table.domain.TableGroup;
 
 public class TableGroupResponse {

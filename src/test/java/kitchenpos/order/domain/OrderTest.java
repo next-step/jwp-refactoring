@@ -4,7 +4,7 @@ import static kitchenpos.order.OrderFixture.주문항목;
 import static kitchenpos.order.domain.OrderStatus.COMPLETION;
 import static kitchenpos.order.domain.OrderStatus.COOKING;
 import static kitchenpos.order.domain.OrderStatus.MEAL;
-import static kitchenpos.table.TableFixture.일번테이블;
+import static kitchenpos.order.TableFixture.일번테이블;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 

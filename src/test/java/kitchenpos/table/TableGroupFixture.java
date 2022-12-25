@@ -1,6 +1,6 @@
 package kitchenpos.table;
 
-import static kitchenpos.table.TableFixture.빈테이블;
+import static kitchenpos.order.TableFixture.빈테이블;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -12,7 +12,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.table.domain.TableGroup;
-import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.order.dto.OrderTableRequest;
 import kitchenpos.table.dto.TableGroupRequest;
 import org.springframework.http.MediaType;
 

@@ -16,7 +16,7 @@ import kitchenpos.order.domain.OrderTable;
 import kitchenpos.table.application.TableGroupService;
 import kitchenpos.table.dao.TableGroupRepository;
 import kitchenpos.table.domain.TableGroup;
-import kitchenpos.table.dto.OrderTableResponse;
+import kitchenpos.order.dto.OrderTableResponse;
 import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.dto.TableGroupResponse;
 import org.junit.jupiter.api.BeforeEach;

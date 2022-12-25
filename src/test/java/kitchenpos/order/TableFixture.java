@@ -1,11 +1,11 @@
-package kitchenpos.table;
+package kitchenpos.order;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.Collections;
 import kitchenpos.order.domain.OrderTable;
-import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.order.dto.OrderTableRequest;
 import org.springframework.http.MediaType;
 
 public class TableFixture {

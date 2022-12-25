@@ -4,7 +4,7 @@ import static kitchenpos.menu.MenuFixture.더블강정치킨;
 import static kitchenpos.order.OrderFixture.createOrderRequest;
 import static kitchenpos.order.OrderFixture.주문;
 import static kitchenpos.order.OrderFixture.주문항목;
-import static kitchenpos.table.TableFixture.일번테이블;
+import static kitchenpos.order.TableFixture.일번테이블;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.AdditionalAnswers.returnsFirstArg;

@@ -1,8 +1,8 @@
-package kitchenpos.table;
+package kitchenpos.order;
 
-import static kitchenpos.table.TableFixture.createOrderTableRequest;
-import static kitchenpos.table.TableFixture.빈테이블;
-import static kitchenpos.table.TableFixture.일번테이블;
+import static kitchenpos.order.TableFixture.createOrderTableRequest;
+import static kitchenpos.order.TableFixture.빈테이블;
+import static kitchenpos.order.TableFixture.일번테이블;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.AdditionalAnswers.returnsFirstArg;
@@ -15,9 +15,9 @@ import java.util.List;
 import java.util.Optional;
 import kitchenpos.order.dao.OrderTableRepository;
 import kitchenpos.order.domain.OrderTable;
-import kitchenpos.table.application.TableService;
-import kitchenpos.table.dto.OrderTableRequest;
-import kitchenpos.table.dto.OrderTableResponse;
+import kitchenpos.order.application.TableService;
+import kitchenpos.order.dto.OrderTableRequest;
+import kitchenpos.order.dto.OrderTableResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
