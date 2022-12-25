@@ -201,15 +201,16 @@
 
 ## STEP4
 
-- 멀티 모듈 적용 [ ]
-- Spring Boot Test Mock Test 변환 [ ]
-    - MenuGroupServiceTest [x]
-    - MenuServiceTest [x]
-    - OrderServiceTest [x]
-    - TableGroupServiceTest [x]
-    - TableServiceTest [x]
-    - ProductServiceTest [x]
-- kitchenpos-product [x]
-- kitchenpos-order [ ]
-- kitchenpos-menu [x]
-- kitchenpos-table [x]
+- [x] 멀티 모듈 적용
+- [x] module-product
+- [x] module-order
+- [x] module-menu
+- [x] module-table
+
+- [x] Spring Boot Test -> Mock Test 변환
+    - [x] MenuGroupServiceTest
+    - [x] MenuServiceTest
+    - [x] OrderServiceTest
+    - [x] TableGroupServiceTest
+    - [x] TableServiceTest
+    - [x] ProductServiceTest 
