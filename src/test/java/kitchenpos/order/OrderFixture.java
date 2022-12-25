@@ -20,7 +20,8 @@ import org.springframework.http.MediaType;
 
 public class OrderFixture {
 
-    public static final OrderLineItem 주문항목 = new OrderLineItem(1L, null, MenuFixture.더블강정치킨,
+    public static final OrderLineItem 주문항목 = new OrderLineItem(1L, null,
+        MenuFixture.더블강정치킨.convertToOrderMenu(),
         2L);
     public static final Order 주문 = new Order(1L, 일번테이블, null, null,
         Collections.singletonList(주문항목));

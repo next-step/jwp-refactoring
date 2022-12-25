@@ -31,7 +31,8 @@ class OrderLineItemTest {
     @DisplayName("주문 항목 생성")
     void createOrderLineItem() {
         //when
-        OrderLineItem orderLineItem = new OrderLineItem(null, null, 더블강정치킨, 3L);
+        OrderLineItem orderLineItem = new OrderLineItem(null, null, 더블강정치킨.convertToOrderMenu(),
+            3L);
 
         //then
         assertThat(orderLineItem.getQuantity()).isEqualTo(3L);

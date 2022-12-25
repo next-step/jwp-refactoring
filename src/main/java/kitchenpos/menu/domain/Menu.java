@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import kitchenpos.common.Price;
+import kitchenpos.order.domain.OrderMenu;
 
 @Entity
 public class Menu {
@@ -37,6 +38,10 @@ public class Menu {
         this.menuGroup = menuGroup;
         this.menuProducts = new MenuProducts(this, menuProducts);
         validateMenu();
+    }
+
+    public OrderMenu convertToOrderMenu() {
+        return new OrderMenu(this.id, this.getName(), this.price);
     }
 
     private void validateMenu() {
