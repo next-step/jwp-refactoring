@@ -1,14 +1,10 @@
 package kitchenpos.order.domain;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 
 @Entity
 public class OrderTable {
@@ -20,18 +16,14 @@ public class OrderTable {
     @Embedded
     private NumberOfGuest numberOfGuests;
     private boolean empty;
-    @OneToMany(mappedBy = "orderTable")
-    private List<Order> orders = new ArrayList<>();
 
     protected OrderTable() {
     }
 
-    public OrderTable(Long id, int numberOfGuests, boolean empty,
-        List<Order> orders) {
+    public OrderTable(Long id, int numberOfGuests, boolean empty) {
         this.id = id;
         this.numberOfGuests = new NumberOfGuest(numberOfGuests);
         this.empty = empty;
-        this.orders = orders;
     }
 
     public Long getId() {
@@ -47,9 +39,11 @@ public class OrderTable {
     }
 
     public void ungroup() {
+/*
+        FIXME
         if (onCookingOrMeal()) {
             throw new IllegalArgumentException("조리중이거나 식사중에는 단체 지정해제할 수 없습니다.");
-        }
+        }*/
         this.tableGroupId = null;
     }
 
@@ -66,26 +60,7 @@ public class OrderTable {
     }
 
     public void changeEmpty(final boolean empty) {
-        validateChangeEmpty();
         this.empty = empty;
-    }
-
-    private void validateChangeEmpty() {
-        if (Objects.nonNull(tableGroupId)) {
-            throw new IllegalArgumentException("단체 지정된 테이블은 비울 수 없습니다.");
-        }
-
-        orders.stream()
-            .filter(Order::onCookingOrMeal)
-            .findFirst()
-            .ifPresent(order -> {
-                throw new IllegalArgumentException("조리중 이거나 식사중에는 테이블을 비울 수 없습니다.");
-            });
-    }
-
-    public boolean onCookingOrMeal() {
-        return orders.stream()
-            .anyMatch(Order::onCookingOrMeal);
     }
 
     public void changeNumberOfGuest(int numberOfGuests) {

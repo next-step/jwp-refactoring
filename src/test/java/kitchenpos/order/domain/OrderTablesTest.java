@@ -24,16 +24,16 @@ class OrderTablesTest {
 
     @BeforeEach
     void setup() {
-        OrderTable 일번테이블 = new OrderTable(1L, 0, false, Collections.emptyList());
+        OrderTable 일번테이블 = new OrderTable(1L, 0, false);
         Order 조리중 = new Order(1L, 일번테이블, COOKING, null, Collections.singletonList(주문항목));
         Order 식사중 = new Order(1L, 일번테이블, MEAL, null, Collections.singletonList(주문항목));
-        일번조리중테이블 = new OrderTable(1L, 0, true, Collections.singletonList(조리중));
-        이번조리중테이블 = new OrderTable(2L, 0, true, Collections.singletonList(조리중));
-        일번식사중테이블 = new OrderTable(1L, 0, true, Collections.singletonList(식사중));
-        이번식사중테이블 = new OrderTable(2L, 0, true, Collections.singletonList(식사중));
-        일번빈테이블 = new OrderTable(1L, 0, true, Collections.emptyList());
-        이번빈테이블 = new OrderTable(2L, 0, true, Collections.emptyList());
-        주문테이블 = new OrderTable(1L, 0, false, Collections.emptyList());
+        일번조리중테이블 = new OrderTable(1L, 0, true);
+        이번조리중테이블 = new OrderTable(2L, 0, true);
+        일번식사중테이블 = new OrderTable(1L, 0, true);
+        이번식사중테이블 = new OrderTable(2L, 0, true);
+        일번빈테이블 = new OrderTable(1L, 0, true);
+        이번빈테이블 = new OrderTable(2L, 0, true);
+        주문테이블 = new OrderTable(1L, 0, false);
     }
 
     @Test

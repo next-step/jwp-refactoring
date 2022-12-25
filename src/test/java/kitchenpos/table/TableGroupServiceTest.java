@@ -13,10 +13,10 @@ import java.util.Collections;
 import java.util.Optional;
 import kitchenpos.order.dao.OrderTableRepository;
 import kitchenpos.order.domain.OrderTable;
+import kitchenpos.order.dto.OrderTableResponse;
 import kitchenpos.table.application.TableGroupService;
 import kitchenpos.table.dao.TableGroupRepository;
 import kitchenpos.table.domain.TableGroup;
-import kitchenpos.order.dto.OrderTableResponse;
 import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.dto.TableGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -41,7 +41,7 @@ class TableGroupServiceTest {
 
     @BeforeEach
     void setup() {
-        빈테이블 = new OrderTable(2L, 0, true, Collections.emptyList());
+        빈테이블 = new OrderTable(2L, 0, true);
     }
 
     @Test

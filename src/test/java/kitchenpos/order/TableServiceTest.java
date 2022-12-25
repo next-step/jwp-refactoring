@@ -10,14 +10,14 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import kitchenpos.order.application.TableService;
 import kitchenpos.order.dao.OrderTableRepository;
 import kitchenpos.order.domain.OrderTable;
-import kitchenpos.order.application.TableService;
 import kitchenpos.order.dto.OrderTableRequest;
 import kitchenpos.order.dto.OrderTableResponse;
+import kitchenpos.order.validator.OrderTableValidator;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,6 +30,8 @@ class TableServiceTest {
 
     @Mock
     private OrderTableRepository orderTableRepository;
+    @Mock
+    private OrderTableValidator validator;
     @InjectMocks
     private TableService tableService;
 
@@ -69,7 +71,7 @@ class TableServiceTest {
     @DisplayName("테이블 비우기")
     void emptyTable() {
         //given
-        OrderTable 일번테이블 = new OrderTable(1L, 0, false, Collections.emptyList());
+        OrderTable 일번테이블 = new OrderTable(1L, 0, false);
         when(orderTableRepository.findById(any())).thenReturn(Optional.of(일번테이블));
         when(orderTableRepository.save(any())).then(returnsFirstArg());
 
@@ -95,7 +97,7 @@ class TableServiceTest {
     @DisplayName("테이블 손님 수 변경")
     void changeNumberOfGuest() {
         //given
-        OrderTable 일번테이블 = new OrderTable(1L, 0, false, Collections.emptyList());
+        OrderTable 일번테이블 = new OrderTable(1L, 0, false);
         when(orderTableRepository.findById(any())).thenReturn(Optional.of(일번테이블));
         when(orderTableRepository.save(any())).then(returnsFirstArg());
 

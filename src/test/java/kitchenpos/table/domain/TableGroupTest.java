@@ -26,16 +26,16 @@ class TableGroupTest {
 
     @BeforeEach
     void setup() {
-        OrderTable 일번테이블 = new OrderTable(1L, 0, false, Collections.emptyList());
+        OrderTable 일번테이블 = new OrderTable(1L, 0, false);
         Order 조리중 = new Order(1L, 일번테이블, COOKING, null, Collections.singletonList(주문항목));
         Order 식사중 = new Order(1L, 일번테이블, MEAL, null, Collections.singletonList(주문항목));
-        일번조리중테이블 = new OrderTable(1L, 0, true, Collections.singletonList(조리중));
-        이번조리중테이블 = new OrderTable(2L, 0, true, Collections.singletonList(조리중));
-        일번식사중테이블 = new OrderTable(1L, 0, true, Collections.singletonList(식사중));
-        이번식사중테이블 = new OrderTable(2L, 0, true, Collections.singletonList(식사중));
-        일번빈테이블 = new OrderTable(1L, 0, true, Collections.emptyList());
-        이번빈테이블 = new OrderTable(2L, 0, true, Collections.emptyList());
-        주문테이블 = new OrderTable(1L, 0, false, Collections.emptyList());
+        일번조리중테이블 = new OrderTable(1L, 0, true);
+        이번조리중테이블 = new OrderTable(2L, 0, true);
+        일번식사중테이블 = new OrderTable(1L, 0, true);
+        이번식사중테이블 = new OrderTable(2L, 0, true);
+        일번빈테이블 = new OrderTable(1L, 0, true);
+        이번빈테이블 = new OrderTable(2L, 0, true);
+        주문테이블 = new OrderTable(1L, 0, false);
     }
 
     @Test
@@ -69,6 +69,7 @@ class TableGroupTest {
 
     @Test
     @DisplayName("단체 지정 해제할 대상 테이블의 주문 상태가 조리중 이거나 식사중 이라면 해제 불가능")
+        //FIXME
     void cannotUngroupWhenOrderOnMealOrCooking() {
         //given
         TableGroup 조리중테이블그룹 = new TableGroup(1L, Arrays.asList(일번조리중테이블, 이번조리중테이블));
