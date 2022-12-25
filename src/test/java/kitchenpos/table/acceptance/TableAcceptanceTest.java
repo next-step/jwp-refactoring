@@ -1,8 +1,9 @@
-package kitchenpos;
+package kitchenpos.table.acceptance;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import kitchenpos.AcceptanceTest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.table.dto.OrderTableResponse;
 import org.junit.jupiter.api.DisplayName;
@@ -18,9 +19,9 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static kitchenpos.OrderAcceptanceTest.메뉴_등록_요청;
-import static kitchenpos.OrderAcceptanceTest.주문_생성_요청;
-import static kitchenpos.TableGroupAcceptanceTest.단체_지정_생성_요청;
+import static kitchenpos.order.acceptance.OrderAcceptanceTest.메뉴_등록_요청;
+import static kitchenpos.order.acceptance.OrderAcceptanceTest.주문_생성_요청;
+import static kitchenpos.table.acceptance.TableGroupAcceptanceTest.단체_지정_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
