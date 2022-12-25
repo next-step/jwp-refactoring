@@ -198,3 +198,19 @@
     - [x] MenuProduct Product 의존성 제거
     - [x] Orders OrderTable 의존성 제거
     - [x] OrderService TableService 결합도 줄이기
+
+## STEP4
+
+- [x] 멀티 모듈 적용
+- [x] module-product
+- [x] module-order
+- [x] module-menu
+- [x] module-table
+
+- [x] Spring Boot Test -> Mock Test 변환
+    - [x] MenuGroupServiceTest
+    - [x] MenuServiceTest
+    - [x] OrderServiceTest
+    - [x] TableGroupServiceTest
+    - [x] TableServiceTest
+    - [x] ProductServiceTest 
