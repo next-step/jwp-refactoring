@@ -8,6 +8,7 @@ import kitchenpos.table.dto.CreateTableGroupRequest;
 import kitchenpos.table.dto.TableGroupResponse;
 import kitchenpos.table.repository.OrderTableRepository;
 import kitchenpos.table.repository.TableGroupRepository;
+import kitchenpos.table.validator.TableGroupValidator;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

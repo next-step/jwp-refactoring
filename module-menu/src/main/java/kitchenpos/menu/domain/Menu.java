@@ -1,5 +1,7 @@
 package kitchenpos.menu.domain;
 
+import kitchenpos.menu.validator.MenuProductValidator;
+
 import javax.persistence.*;
 import java.util.Objects;
 

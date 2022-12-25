@@ -1,6 +1,6 @@
 package kitchenpos.menu.application;
 
-import kitchenpos.menu.domain.MenuProductValidator;
+import kitchenpos.menu.validator.MenuProductValidator;
 import kitchenpos.menu.domain.Price;
 import kitchenpos.menu.dto.MenuCreateRequest;
 import kitchenpos.menu.dto.MenuResponse;

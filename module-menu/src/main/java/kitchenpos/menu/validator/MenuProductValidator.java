@@ -1,5 +1,6 @@
-package kitchenpos.menu.domain;
+package kitchenpos.menu.validator;
 
+import kitchenpos.menu.domain.Menu;
 import org.springframework.stereotype.Component;
 
 @Component

@@ -2,7 +2,7 @@ package kitchenpos.order.validator;
 
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.repository.OrderRepository;
-import kitchenpos.table.application.TableGroupValidator;
+import kitchenpos.table.validator.TableGroupValidator;
 import kitchenpos.table.domain.TableGroup;
 import org.springframework.stereotype.Component;
 

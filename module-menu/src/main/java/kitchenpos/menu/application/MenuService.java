@@ -5,6 +5,7 @@ import kitchenpos.menu.dto.MenuCreateRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.repository.MenuGroupRepository;
 import kitchenpos.menu.repository.MenuRepository;
+import kitchenpos.menu.validator.MenuProductValidator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

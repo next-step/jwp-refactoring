@@ -1,6 +1,6 @@
 package kitchenpos.table.domain;
 
-import kitchenpos.table.application.TableGroupValidator;
+import kitchenpos.table.validator.TableGroupValidator;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
