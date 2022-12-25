@@ -15,38 +15,35 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.order.domain.OrderValidator;
+import kitchenpos.order.dto.OrderRequest;
+import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.order.dto.OrderStatusRequest;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Transactional(readOnly = true)
 @Service
 public class OrderService {
 
     private final OrderRepository orderRepository;
-    private final OrderTableRepository orderTableRepository;
-    private final MenuRepository menuRepository;
+    private final OrderValidator orderValidator;
 
-    public OrderService(OrderRepository orderRepository, OrderTableRepository orderTableRepository,
-        MenuRepository menuRepository) {
+    public OrderService(OrderRepository orderRepository, OrderValidator orderValidator) {
         this.orderRepository = orderRepository;
-        this.orderTableRepository = orderTableRepository;
-        this.menuRepository = menuRepository;
+        this.orderValidator = orderValidator;
     }
 
     @Transactional
     public OrderResponse create(OrderRequest request) {
-        OrderTable orderTable = orderTableRepository.findById(request.getOrderTableId())
-            .orElseThrow(() -> new IllegalArgumentException("주문 테이블이 존재하지 없습니다."));
-
-        List<Menu> menus = findAllMenuById(request.findAllMenuIds());
-        Order saveOrder = request.toOrder(orderTable, menus);
-
+        orderValidator.validate(request);
+        Order saveOrder = request.toOrder(request.getOrderTableId(), request.findAllMenuIds());
         return OrderResponse.from(orderRepository.save(saveOrder));
-    }
-
-    private List<Menu> findAllMenuById(List<Long> menuIds) {
-        List<Menu> menus = menuRepository.findAllById(menuIds);
-        if (menuIds.size() != menus.size()) {
-            throw new IllegalArgumentException("주문 항목의 메뉴의 개수가 일치하지 않습니다.");
-        }
-        return menus;
     }
 
     public List<OrderResponse> list() {

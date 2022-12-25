@@ -6,6 +6,7 @@ import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.domain.OrderValidator;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
@@ -22,6 +23,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.math.BigDecimal;
@@ -50,7 +52,10 @@ class OrderServiceTest {
     private OrderRepository orderRepository;
 
     @Mock
-    private OrderTableRepository orderTableRepository;
+    private ApplicationEventPublisher eventPublisher;
+
+    @Mock
+    private OrderValidator orderValidator;
 
     private OrderTable 주문_테이블;
     private Order 주문;
@@ -83,6 +88,7 @@ class OrderServiceTest {
         주문_메뉴 = new OrderLineItem(주문, 메뉴.getId(), 1);
         OrderLineItemRequest 주문_항목_요청 = new OrderLineItemRequest(1L, 1L);
         주문_요청 = new OrderRequest(1L, Arrays.asList(주문_항목_요청));
+
     }
 
     @DisplayName("주문을 등록할 수 있다.")
@@ -91,8 +97,6 @@ class OrderServiceTest {
         // given
         OrderRequest request = new OrderRequest(주문_테이블.getId(), OrderLineItemRequest.list(Arrays.asList(주문_메뉴)));
 
-        when(orderTableRepository.findById(주문_테이블.getId())).thenReturn(Optional.of(주문_테이블));
-        when(menuRepository.findAllById(any())).thenReturn(Arrays.asList(메뉴));
         when(orderRepository.save(any(Order.class))).thenReturn(주문);
 
         // when
@@ -102,36 +106,6 @@ class OrderServiceTest {
         assertThat(주문_등록.getOrderLineItems()).hasSize(주문.getOrderLineItems().size());
     }
 
-    @DisplayName("주문 항목이 없으면 주문할 수 없다.")
-    @Test
-    void createErrorWithoutOrderItem() {
-        // given && when && then
-        assertThatThrownBy(() -> orderService.create(주문_요청))
-            .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @DisplayName("주문 항목의 메뉴의 개수가 일치하지 않으면 주문 할 수 없다.")
-    @Test
-    void createErrorDuplicatedOrderItem() {
-        // given
-        when(orderTableRepository.findById(주문_테이블.getId())).thenReturn(Optional.of(주문_테이블));
-        when(menuRepository.findAllById(any())).thenReturn(Arrays.asList(메뉴, 메뉴));
-
-        // when && then
-        assertThatThrownBy(() -> orderService.create(주문_요청))
-            .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @DisplayName("주문 테이블의 값이 저장되어 있지 않으면 주문 할 수 없다.")
-    @Test
-    void createErrorOrderTableEmpty() {
-        // given
-        when(orderTableRepository.findById(any())).thenReturn(Optional.empty());
-
-        // when && then
-        assertThatThrownBy(() -> orderService.create(주문_요청))
-            .isInstanceOf(IllegalArgumentException.class);
-    }
 
     @DisplayName("주문의 목록을 조회할 수 있다.")
     @Test
@@ -149,7 +123,7 @@ class OrderServiceTest {
     @DisplayName("주문의 주문 상태가 조리 또는 식사중 일 경우 상태를 변경할 수 있다.")
     @ParameterizedTest(name = "#{index} - 주문 상태를 {2}에서 {3}로 변경할 수 있다.")
     @MethodSource("order_status_info")
-    void updateOrderStatus(OrderStatus 기존주문상태, OrderStatus 변경주문상태, String s, String s2) {
+    void update_order_status(OrderStatus 기존주문상태, OrderStatus 변경주문상태, String s, String s2) {
         // given
         OrderStatusRequest 주문상태_식사중_변경 = new OrderStatusRequest(변경주문상태);
 
@@ -174,7 +148,7 @@ class OrderServiceTest {
 
     @DisplayName("주문이 저장되어 있지 않으면 주문의 상태를 변경할 수 없다.")
     @Test
-    void updateFailOrderStatusNotSaveOrder() {
+    void update_fail_order_status_not_save_order() {
         // given
         OrderStatusRequest 주문상태_식사중_변경 = new OrderStatusRequest(OrderStatus.MEAL);
 
@@ -184,7 +158,7 @@ class OrderServiceTest {
 
     @DisplayName("주문의 상태가 완료인 경우 주문의 상태를 변경할 수 없다.")
     @Test
-    void updateFailNotChangeOrderComplete() {
+    void update_fail_not_change_order_complete() {
         // given
         OrderStatusRequest 주문상태_식사중_변경 = new OrderStatusRequest(OrderStatus.MEAL);
         주문.changeOrderStatus(OrderStatus.COMPLETION);
