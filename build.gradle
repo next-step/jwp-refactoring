@@ -1,31 +1,87 @@
-plugins {
-    id 'org.springframework.boot' version '2.4.1'
-    id 'io.spring.dependency-management' version '1.0.10.RELEASE'
-    id 'java'
+buildscript {
+    ext {
+        springBootVersion = '2.4.1'
+    }
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        classpath "io.spring.gradle:dependency-management-plugin:1.0.10.RELEASE"
+    }
 }
 
-group = 'camp.nextstep.edu'
-version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '1.8'
+allprojects {
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
+    apply plugin: 'java'
 
-repositories {
-    mavenCentral()
+    group = 'camp.nextstep.edu'
+    version = '0.0.1-SNAPSHOT'
+    sourceCompatibility = '1.8'
+
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        implementation 'org.springframework.boot:spring-boot-starter-actuator'
+        implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+        implementation 'org.springframework.boot:spring-boot-starter-web'
+
+        runtimeOnly 'com.h2database:h2'
+
+        testImplementation 'io.rest-assured:rest-assured:3.3.0'
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    }
+
+    test {
+        useJUnitPlatform()
+    }
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-actuator'
-    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-
     implementation 'org.flywaydb:flyway-core'
 
-    runtimeOnly 'com.h2database:h2'
+    implementation project(':common')
+    implementation project(':product')
+    implementation project(':menu')
+    implementation project(':order')
 
-    testImplementation 'io.rest-assured:rest-assured:3.3.0'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testCompile project(':common').sourceSets.test.output
+    testCompile project(':product').sourceSets.test.output
+    testCompile project(':menu').sourceSets.test.output
+    testCompile project(':order').sourceSets.test.output
 }
 
-test {
-    useJUnitPlatform()
+project(':common') {
+    dependencies {
+    }
+}
+
+project(':product') {
+    dependencies {
+        implementation project(':common')
+        testCompile project(':common').sourceSets.test.output
+    }
+}
+
+project(':menu') {
+    dependencies {
+        implementation project(':common')
+        implementation project(':product')
+        testCompile project(':common').sourceSets.test.output
+        testCompile project(':product').sourceSets.test.output
+    }
+}
+
+project(':order') {
+    dependencies {
+        implementation project(':common')
+        implementation project(':product')
+        implementation project(':menu')
+        testCompile project(':common').sourceSets.test.output
+        testCompile project(':product').sourceSets.test.output
+        testCompile project(':menu').sourceSets.test.output
+    }
 }
