@@ -1,0 +1,7 @@
+bootJar { enabled = false }
+jar { enabled = true }
+
+dependencies {
+    implementation project(':kitchenpos-product')
+    testImplementation project(':kitchenpos-product').sourceSets.test.output
+}

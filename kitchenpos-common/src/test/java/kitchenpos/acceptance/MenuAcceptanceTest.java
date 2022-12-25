@@ -1,8 +1,9 @@
-package kitchenpos;
+package kitchenpos.acceptance;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import kitchenpos.AcceptanceTest;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuResponse;
@@ -22,8 +23,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static kitchenpos.MenuGroupAcceptanceTest.메뉴_그룹_생성_요청;
-import static kitchenpos.ProductAcceptanceTest.상품_생성_요청;
+import static kitchenpos.acceptance.MenuGroupAcceptanceTest.메뉴_그룹_생성_요청;
+import static kitchenpos.acceptance.ProductAcceptanceTest.상품_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
