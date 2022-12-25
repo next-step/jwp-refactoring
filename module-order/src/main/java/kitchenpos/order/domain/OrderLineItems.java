@@ -19,7 +19,6 @@ public class OrderLineItems {
     public void addOrderLineItem(Order order, OrderLineItem orderLineItem) {
         if (!orderLineItems.contains(orderLineItem)) {
             this.orderLineItems.add(orderLineItem);
-            orderLineItem.updateOrder(order);
         }
     }
 
