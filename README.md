@@ -206,6 +206,7 @@ PUT /api/orders/{orderId}/order-status
 ## 멀티 모듈 적용
 
 - [X] 컨텍스트 간의 독립된 모듈
+- [X] 계층 간의 독립된 모듈
 
 ## 용어 사전
 
